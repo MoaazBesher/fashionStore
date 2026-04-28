@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Discover elegant dresses, stylish bags, and beautiful accessories at Fashion Store. Modern fashion, timeless charm." />
+  <meta property="og:title" content="Fashion Store" />
+  <meta property="og:description" content="Your ultimate fashion destination - dresses, bags, accessories & more" />
+  <meta property="og:image" content="resources/boutique.png" />
+  <meta name="theme-color" content="#e91e63" />
+  <title>Fashion Store</title>
+  <link rel="icon" type="image/x-icon" href="resources/boutique.png">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Loader -->
+  <div id="loader">
+    <div class="loader-content">
+      <div class="loader-logo">
+        <i class="fas fa-shopping-bag"></i>
+      </div>
+      <span class="loader-text">Fashion Store</span>
+      <div class="loader-spinner"></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <div class="brand-icon">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Fashion Store</h1>
+          <p>Elegant Style</p>
+        </div>
+      </div>
+<div class="navbar-actions">
+
+        <div class="navbar-search" id="navbarSearch">
+          <input type="text" id="searchInput" placeholder="Search products..." />
+          <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <button class="search-toggle" id="signInBtn" title="Sign In">
+          <i class="fas fa-sign-in-alt"></i>
+        </button>
+        <button class="search-toggle" id="profileLink" title="My Profile" style="display:none;">
+          <i class="fas fa-user"></i>
+        </button>
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="dropdown-header">
+            <div class="dropdown-user">
+              <i class="fas fa-user-circle"></i>
+              <span id="dropdownUserName">User</span>
+            </div>
+          </div>
+          <a href="/profile/" class="dropdown-item">
+            <i class="fas fa-clipboard-list"></i> My Orders
+          </a>
+          <a href="/profile/?tab=wishlist" class="dropdown-item">
+            <i class="fas fa-heart"></i> Wishlist
+          </a>
+          <a href="/profile/?tab=settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item" id="dropdownSignOut">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+          </button>
+        </div>
+      </div>
+</div>
+    </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-badge">New Collection <span id="currentYear"></span></span>
+      <h1 class="hero-title">Discover Your <span>Elegant Style</span></h1>
+      <p class="hero-subtitle">Explore our stunning collection of dresses, bags, and accessories designed to make you shine.</p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number" id="productsCount">0+</div>
+          <div class="stat-label">Products</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="customersCount">0+</div>
+          <div class="stat-label">Happy Customers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number"> <span id="ratingValue">0</span></div>
+          <div class="stat-label">Rating</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <section class="filters-section">
+    <div class="filters-container">
+      <button class="filter-btn active" data-category="all">All Products</button>
+      <button class="filter-btn" data-category="dress">Dresses</button>
+      <button class="filter-btn" data-category="bag">Bags</button>
+      <button class="filter-btn" data-category="accessory">Accessories</button>
+    </div>
+  </section>
+
+  <!-- Products Grid -->
+  <section class="products-section">
+    <div class="products-grid" id="products"></div>
+    <p id="noResults">No products found. Please try a different search.</p>
+  </section>
+
+  <!-- Show More -->
+  <div class="show-more-container">
+    <button id="showMoreBtn">Show More Products</button>
+  </div>
+
+  <!-- Product Modal -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-body">
+        <div class="modal-gallery">
+          <div class="modal-main-image">
+            <img src="" alt="Product" id="mainModalImg" />
+          </div>
+          <div class="modal-thumbnails" id="modalThumbnails"></div>
+        </div>
+        <div class="modal-details" id="modalDetails"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Modal -->
+  <div id="cartModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close">
+        <i class="fas fa-times"></i>
+      </button>
+      <h2>Your Shopping Cart</h2>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cartTotal">$0.00</span>
+        </div>
+        <button id="checkoutBtn">Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkoutModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close">
+        <i class="fas fa-times"></i>
+      </button>
+      <h2>Complete Your Order</h2>
+      <form id="checkoutForm">
+        <div class="form-group">
+          <label for="fullName">Full Name *</label>
+          <input type="text" id="fullName" required />
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number *</label>
+          <input type="tel" id="phone" pattern="01[0-9]{9}" required />
+          <small>Must start with 01 and be 11 digits</small>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" />
+        </div>
+        <div class="form-group">
+          <label for="governorate">Governorate *</label>
+          <select id="governorate" required>
+            <option value="">Select Governorate</option>
+            <option value="القاهرة">Cairo</option>
+            <option value="الجيزة">Giza</option>
+            <option value="الأسكندرية">Alexandria</option>
+            <option value="الدقهلية">Dakahlia</option>
+            <option value="البحر الأحمر">Red Sea</option>
+            <option value="البحيرة">Beheira</option>
+            <option value="الفيوم">Faiyum</option>
+            <option value="الغربية">Gharbia</option>
+            <option value="الإسماعيلية">Ismailia</option>
+            <option value="المنوفية">Monufia</option>
+            <option value="المنيا">Minya</option>
+            <option value="القليوبية">Qalyubia</option>
+            <option value="الوادي الجديد">New Valley</option>
+            <option value="السويس">Suez</option>
+            <option value="أسوان">Aswan</option>
+            <option value="أسيوط">Assiut</option>
+            <option value="بني سويف">Beni Suef</option>
+            <option value="بورسعيد">Port Said</option>
+            <option value="دمياط">Damietta</option>
+            <option value="سوها��">Sohag</option>
+            <option value="جنوب جنوب">South Sinai</option>
+            <option value="كفر الشيخ">Kafr El Sheikh</option>
+            <option value="مطروح">Matrouh</option>
+            <option value="الأقصر">Luxor</option>
+            <option value="قنا">Qena</option>
+            <option value="شمال سيناء">North Sinai</option>
+            <option value="السادس من أكتوبر">6th October</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="address">Full Address *</label>
+          <textarea id="address" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="paymentMethod">Payment Method *</label>
+          <select id="paymentMethod" required disabled>
+            <option value="الدفع عند الاستلام" selected>Cash on Delivery</option>
+          </select>
+          <small>Currently only available payment method</small>
+        </div>
+        <div class="form-group">
+          <label for="notes">Additional Notes</label>
+          <textarea id="notes" rows="2"></textarea>
+        </div>
+        <button type="submit" class="submit-order-btn">Confirm Order</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Cart Icon -->
+  <div class="cart-icon" id="cartIcon">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cartCount">0</span>
+  </div>
+
+  <!-- Sign In Required Modal -->
+  <div id="signInModal" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center; padding: 40px;">
+      <button class="modal-close" onclick="closeSignInModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div style="margin-bottom: 20px;">
+        <div class="brand-icon" style="width: 70px; height: 70px; background: linear-gradient(135deg, #e91e63, #c2185b); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+          <i class="fas fa-user-circle" style="font-size: 2rem; color: white;"></i>
+        </div>
+        <h2 style="font-size: 1.5rem; color: #212121; margin-bottom: 10px;">Sign In Required</h2>
+        <p style="color: #666; margin-bottom: 25px;">Please sign in to complete your order</p>
+        <button id="modalSignInBtn" style="display: flex; align-items: center; justify-content: center; width: 100%; padding: 14px; background: #4285f4; color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; gap: 10px;">
+          <i class="fab fa-google"></i> Continue with Google
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wishlist Modal -->
+  <div id="wishlistModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <button class="modal-close" onclick="closeWishlistModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <h2 style="font-size: 1.5rem; color: #212121; margin-bottom: 20px; padding: 20px 20px 0;">
+        <i class="fas fa-heart" style="color: #e91e63;"></i> My Wishlist
+      </h2>
+      <div class="cart-items" id="wishlistItems" style="max-height: 400px; overflow-y: auto; padding: 0 20px 20px;"></div>
+    </div>
+  </div>
+
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="contact-container">
+      <h2>Get In Touch</h2>
+      <p>Follow us on social media or contact us directly</p>
+      <div class="social-links">
+        <a href="https://wa.me/" target="_blank" aria-label="WhatsApp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://instagram.com/" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://facebook.com/" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Fashion Store</span>
+      </div>
+      <p>&copy; <span id="footerYear"></span> Crafted with excellence by <a href="/organization/">Goats Development</a></p>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCbv5agQov4LyezPbWM_XC8qk8bkbh8EX8",
+      authDomain: "market-products-d3b84.firebaseapp.com",
+      databaseURL: "https://market-products-d3b84-default-rtdb.firebaseio.com",
+      projectId: "market-products-d3b84",
+      storageBucket: "market-products-d3b84.appspot.com",
+      messagingSenderId: "383604293089",
+      appId: "1:383604293089:web:a59e21488df2f0bdbfe6a0",
+      measurementId: "G-HK5H94NJZG"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Update year automatically
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+    updateVisitCounter();
+
+    function updateVisitCounter() {
+      if (!navigator.onLine) {
+        console.warn('No internet connection - visit not counted');
+        return;
+      }
+
+      const statsRef = database.ref('siteStats');
+      
+      statsRef.transaction((currentStats) => {
+        if (currentStats === null) {
+          return {
+            visits: 1,
+            lastUpdated: firebase.database.ServerValue.TIMESTAMP
+          };
+        }
+        
+        if (typeof currentStats === 'object') {
+          currentStats.visits = (currentStats.visits || 0) + 1;
+          currentStats.lastUpdated = firebase.database.ServerValue.TIMESTAMP;
+          return currentStats;
+        }
+        
+        return undefined;
+      }).then((result) => {
+        if (result.committed) {
+          console.log('Visit counter updated successfully.');
+        }
+      }).catch((error) => {
+        console.error('Error updating visit counter:', error);
+      });
+    }
+
+    // Fetch real stats for hero section
+    function fetchHeroStats() {
+      // Products count
+      database.ref('products').once('value', snapshot => {
+        const count = snapshot.numChildren() || 0;
+        document.getElementById('productsCount').textContent = count + '+';
+      });
+
+      // Customers = Orders count
+      database.ref('orders').once('value', snapshot => {
+        const count = snapshot.numChildren() || 0;
+        document.getElementById('customersCount').textContent = count >= 1000 ? (count/1000).toFixed(1) + 'K+' : count + '+';
+      });
+
+      // Rating - calculated from all products average
+      database.ref('products').once('value', snapshot => {
+        let totalRating = 0;
+        let count = 0;
+        snapshot.forEach(child => {
+          const product = child.val();
+          if (product.rating) {
+            totalRating += product.rating;
+            count++;
+          }
+        });
+        const avg = count > 0 ? (totalRating / count).toFixed(1) : '0';
+        document.getElementById('ratingValue').textContent = avg;
+      });
+    }
+
+    fetchHeroStats();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

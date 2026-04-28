@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Orders - Fashion Store Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #e91e63;
+      --primary-dark: #c2185b;
+      --primary-light: #fce4ec;
+      --secondary: #212121;
+      --white: #ffffff;
+      --light-bg: #fafafa;
+      --text: #333333;
+      --text-light: #666666;
+      --text-lighter: #999999;
+      --border: #e0e0e0;
+      --success: #4caf50;
+      --error: #f44336;
+      --warning: #ff9800;
+      --info: #2196f3;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.12);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.16);
+      --shadow-glow: 0 0 30px rgba(233,30,99,0.3);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 50%, #e3f2fd 100%);
+      min-height: 100vh;
+      padding: 30px 20px;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 70%, rgba(233,30,99,0.1) 0%, transparent 50%);
+      animation: bgFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes bgFloat {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, -30px); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .header-icon {
+      width: 55px;
+      height: 55px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .header-icon i {
+      font-size: 1.4rem;
+      color: white;
+    }
+
+    .header-text h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    .header-text p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 10px 18px;
+      background: var(--light-bg);
+      border: 2px solid transparent;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .order-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .order-id {
+      font-weight: 700;
+      color: var(--secondary);
+      font-size: 1rem;
+    }
+
+    .order-status {
+      padding: 6px 14px;
+      border-radius: var(--radius-xl);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-new { background: var(--info); color: white; }
+    .status-pending { background: var(--warning); color: white; }
+    .status-completed { background: var(--success); color: white; }
+    .status-cancelled { background: var(--error); color: white; }
+
+    .order-info p {
+      margin: 8px 0;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .order-info strong {
+      color: var(--secondary);
+    }
+
+    .order-total {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-top: 10px;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .view-btn { background: var(--primary); color: white; }
+    .view-btn:hover { background: var(--primary-dark); }
+    
+    .update-btn { background: var(--success); color: white; }
+    .update-btn:hover { background: #388e3c; }
+
+    .no-orders {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px;
+      color: var(--text-light);
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 2000;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius-lg);
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      animation: scaleIn 0.3s ease;
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 40px;
+      height: 40px;
+      background: var(--light-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      font-size: 1.2rem;
+      color: var(--text-light);
+      z-index: 10;
+    }
+
+    .modal-close:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .modal-body {
+      padding: 30px;
+    }
+
+    .modal-body h2 {
+      font-size: 1.3rem;
+      color: var(--secondary);
+      margin-bottom: 15px;
+    }
+
+    .modal-body p {
+      margin: 10px 0;
+      color: var(--text-light);
+    }
+
+    .modal-body strong {
+      color: var(--secondary);
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 25px;
+      background: var(--light-bg);
+      color: var(--text-light);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .btn-back:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--secondary);
+      color: white;
+      padding: 14px 24px;
+      border-radius: var(--radius-md);
+      z-index: 3000;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--error); }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .header-icon {
+        width: 48px;
+        height: 48px;
+      }
+
+      .header-text h1 {
+        font-size: 1.2rem;
+      }
+
+      .filters {
+        flex-wrap: wrap;
+      }
+
+      .filter-btn {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+      }
+
+      .orders-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .order-card {
+        padding: 15px;
+      }
+
+      .order-header {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .order-id {
+        font-size: 0.9rem;
+      }
+
+      .order-status {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+      }
+
+      .order-info p {
+        font-size: 0.8rem;
+      }
+
+      .order-total {
+        font-size: 1rem;
+      }
+
+      .action-btn {
+        padding: 8px;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 20px 10px;
+      }
+
+      .card {
+        padding: 20px 15px;
+        border-radius: var(--radius-md);
+      }
+
+      .header {
+        padding-bottom: 15px;
+      }
+
+      .header-left {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .header-icon {
+        width: 42px;
+        height: 42px;
+      }
+
+      .header-icon i {
+        font-size: 1.1rem;
+      }
+
+      .header-text h1 {
+        font-size: 1.1rem;
+      }
+
+      .header-text p {
+        font-size: 0.8rem;
+      }
+
+      .filters {
+        gap: 6px;
+        padding-bottom: 5px;
+      }
+
+      .filter-btn {
+        padding: 8px 12px;
+        font-size: 0.75rem;
+      }
+
+      .orders-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .order-card {
+        padding: 12px;
+      }
+
+      .order-header {
+        gap: 6px;
+      }
+
+      .order-id {
+        font-size: 0.85rem;
+      }
+
+      .order-info p {
+        font-size: 0.75rem;
+        margin: 6px 0;
+      }
+
+      .order-total {
+        font-size: 0.9rem;
+      }
+
+      .order-actions {
+        margin-top: 12px;
+      }
+
+      .action-btn {
+        padding: 8px;
+        font-size: 0.75rem;
+      }
+
+      .btn-back {
+        padding: 10px 15px;
+        font-size: 0.85rem;
+      }
+
+      .modal-content {
+        margin: 10px;
+        padding: 20px 15px;
+      }
+
+      .modal-body {
+        padding: 15px;
+      }
+
+      .modal-body h2 {
+        font-size: 1.1rem;
+      }
+
+      .modal-body p {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .filters {
+        gap: 5px;
+      }
+
+      .filter-btn {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+      }
+
+      .order-card {
+        padding: 10px;
+      }
+
+      .order-info p {
+        font-size: 0.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <div class="header-left">
+          <div class="header-icon">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+          <div class="header-text">
+            <h1>Manage Orders</h1>
+            <p>Fashion Store Admin</p>
+          </div>
+        </div>
+        <div class="filters">
+          <button class="filter-btn active" data-status="all">All</button>
+          <button class="filter-btn" data-status="new">New</button>
+          <button class="filter-btn" data-status="pending">Pending</button>
+          <button class="filter-btn" data-status="completed">Completed</button>
+          <button class="filter-btn" data-status="cancelled">Cancelled</button>
+        </div>
+      </div>
+
+      <div class="orders-grid" id="ordersGrid">
+        <div class="no-orders">No orders found</div>
+      </div>
+
+      <div class="back-link">
+        <a href="../index.html" class="btn-back">
+          <i class="fas fa-arrow-left"></i>
+          Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="orderModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <div class="modal-body" id="orderDetails"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCbv5agQov4LyezPbWM_XC8qk8bkbh8EX8",
+      authDomain: "market-products-d3b84.firebaseapp.com",
+      databaseURL: "https://market-products-d3b84-default-rtdb.firebaseio.com",
+      projectId: "market-products-d3b84",
+      storageBucket: "market-products-d3b84.appspot.com",
+      messagingSenderId: "383604293089",
+      appId: "1:383604293089:web:a59e21488df2f0bdbfe6a0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    let allOrders = [];
+    let currentFilter = 'all';
+
+    function showToast(msg, type = 'info') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function loadOrders() {
+      database.ref('orders').on('value', snapshot => {
+        allOrders = [];
+        snapshot.forEach(child => {
+          allOrders.push({ id: child.key, ...child.val() });
+        });
+        displayOrders();
+      });
+    }
+
+    function displayOrders() {
+      const grid = document.getElementById('ordersGrid');
+      const filtered = currentFilter === 'all'
+        ? allOrders
+        : allOrders.filter(o => (o.status || 'new') === currentFilter);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="no-orders">No orders found</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(o => {
+        const status = o.status || 'new';
+        const statusClass = status === 'new' ? 'new' : status === 'pending' ? 'pending' : status === 'completed' ? 'completed' : 'cancelled';
+        return `
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">Order #${o.id.slice(-6).toUpperCase()}</span>
+              <span class="order-status status-${statusClass}">${status}</span>
+            </div>
+            <div class="order-info">
+              <p><strong>Name:</strong> ${o.fullName || 'N/A'}</p>
+              <p><strong>Phone:</strong> ${o.phone || 'N/A'}</p>
+              <p><strong>Governorate:</strong> ${o.governorate || 'N/A'}</p>
+              <p><strong>Address:</strong> ${o.address || 'N/A'}</p>
+              <p class="order-total">Total: ${o.total || '$0.00'}</p>
+            </div>
+            <div class="order-actions">
+              <button class="action-btn view-btn" data-id="${o.id}">
+                <i class="fas fa-eye"></i> View
+              </button>
+              <button class="action-btn update-btn" data-id="${o.id}" data-status="completed">
+                <i class="fas fa-check"></i> Complete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelector('.filter-btn.active').classList.remove('active');
+        btn.classList.add('active');
+        currentFilter = btn.dataset.status;
+        displayOrders();
+      });
+    });
+
+    // Order actions
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const id = btn.dataset.id;
+
+      if (btn.classList.contains('view-btn')) {
+        const order = allOrders.find(o => o.id === id);
+        if (order) {
+          const items = order.cartItems ? order.cartItems.map(i => `${i.name} x${i.quantity}`).join(', ') : 'N/A';
+          document.getElementById('orderDetails').innerHTML = `
+            <h2>Order #${id.slice(-6).toUpperCase()}</h2>
+            <p><strong>Customer:</strong> ${order.fullName || 'N/A'}</p>
+            <p><strong>Phone:</strong> ${order.phone || 'N/A'}</p>
+            <p><strong>Email:</strong> ${order.email || 'N/A'}</p>
+            <p><strong>Governorate:</strong> ${order.governorate || 'N/A'}</p>
+            <p><strong>Address:</strong> ${order.address || 'N/A'}</p>
+            <p><strong>Payment:</strong> ${order.paymentMethod || 'N/A'}</p>
+            <p><strong>Items:</strong> ${items}</p>
+            <p><strong>Total:</strong> ${order.total || '$0.00'}</p>
+            <p><strong>Status:</strong> ${order.status || 'new'}</p>
+          `;
+          document.getElementById('orderModal').style.display = 'block';
+        }
+      }
+      else if (btn.classList.contains('update-btn')) {
+        const newStatus = btn.dataset.status;
+        database.ref('orders/' + id).update({ status: newStatus })
+          .then(() => showToast('Order updated!', 'success'));
+      }
+    });
+
+    // Close modal
+    document.querySelector('.modal-close').addEventListener('click', () => {
+      document.getElementById('orderModal').style.display = 'none';
+    });
+
+    document.getElementById('orderModal').addEventListener('click', e => {
+      if (e.target.id === 'orderModal') {
+        document.getElementById('orderModal').style.display = 'none';
+      }
+    });
+
+    loadOrders();
+  </script>
+</body>
+</html>
