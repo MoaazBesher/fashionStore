@@ -63,6 +63,9 @@ fashion-store/
 
 ## Getting Started
 
+### Live Demo
+View the live website: https://demo-market.netlify.app/
+
 ### Prerequisites
 - A modern web browser (Chrome, Firefox, Edge, Safari)
 - A Firebase project (free tier)
