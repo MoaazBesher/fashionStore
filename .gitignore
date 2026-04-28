@@ -1,0 +1,28 @@
+# Firebase Config (Keep Secret)
+firebase-config.js
+firebase.config.js
+config.js
+env.js
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
