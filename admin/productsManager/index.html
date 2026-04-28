@@ -884,6 +884,7 @@
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
   <script>
     const firebaseConfig = {
@@ -897,7 +898,18 @@
     };
 
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const database = firebase.database();
+
+    // Admin allowed emails
+    const ADMIN_EMAILS = ['mo3azbe4er@gmail.com', 'admin2@example.com'];
+
+    // Check if user is authorized
+    auth.onAuthStateChanged(user => {
+      if (!user || !ADMIN_EMAILS.includes(user.email)) {
+        window.location.href = '../index.html';
+      }
+    });
 
     let allProducts = [];
     let currentFilter = 'all';

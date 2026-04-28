@@ -593,10 +593,22 @@
         const userEmail = document.getElementById('userEmail');
         const userAvatar = document.getElementById('userAvatar');
 
+        // Admin allowed emails
+        const ADMIN_EMAILS = ['mo3azbe4er@gmail.com', 'admin2@example.com'];
+
         // Check auth state
         auth.onAuthStateChanged(user => {
             if (user) {
-                showDashboard(user);
+                // Check if email is allowed
+                if (ADMIN_EMAILS.includes(user.email)) {
+                    showDashboard(user);
+                } else {
+                    // Not authorized - sign out and show error
+                    auth.signOut().then(() => {
+                        showError('Access denied. You are not authorized to access the admin dashboard.');
+                        showLogin();
+                    });
+                }
             } else {
                 showLogin();
             }
@@ -607,6 +619,7 @@
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
                 .then(result => {
+                    // After sign in, the onAuthStateChanged will handle the check
                     console.log('Signed in:', result.user);
                 })
                 .catch(error => {
