@@ -841,10 +841,6 @@
               <option value="accessory">Accessory</option>
             </select>
           </div>
-          <div class="form-group">
-            <label><i class="fas fa-star"></i> Rating (1-5)</label>
-            <input type="number" id="editRating" min="1" max="5" value="5">
-          </div>
         </div>
         
         <div class="form-row">
@@ -912,6 +908,7 @@
     });
 
     let allProducts = [];
+    let ratingsCache = {};
     let currentFilter = 'all';
 
     function showToast(msg, type = 'info') {
@@ -931,6 +928,21 @@
       });
     }
 
+    function loadRatings() {
+      database.ref('ratings').on('value', (snapshot) => {
+        ratingsCache = snapshot.val() || {};
+        displayProducts();
+      });
+    }
+
+    function getAverageRating(productId) {
+      const productRatings = ratingsCache[productId];
+      if (!productRatings) return 0;
+      const values = Object.values(productRatings).filter(v => typeof v === 'number');
+      if (values.length === 0) return 0;
+      return values.reduce((sum, r) => sum + r, 0) / values.length;
+    }
+
     function displayProducts() {
       const grid = document.getElementById('productsGrid');
       const filtered = currentFilter === 'all' 
@@ -944,7 +956,8 @@
 
       grid.innerHTML = filtered.map(p => {
         const isAvailable = p.availability !== 'out_of_stock';
-        const rating = Math.max(0, Math.min(5, p.rating || 5));
+        const avgRating = getAverageRating(p.id);
+        const rating = Math.round(Math.max(0, Math.min(5, avgRating)));
         const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
         return `
           <div class="product-card">
@@ -1017,7 +1030,6 @@
       document.getElementById('editName').value = product.name || '';
       document.getElementById('editPrice').value = product.price || '';
       document.getElementById('editCategory').value = product.category || 'dress';
-      document.getElementById('editRating').value = product.rating || 5;
       document.getElementById('editAvailability').value = product.availability || 'available';
       document.getElementById('editImage').value = product.image || '';
       document.getElementById('editDescription').value = product.description || '';
@@ -1036,7 +1048,6 @@
         name: document.getElementById('editName').value,
         price: document.getElementById('editPrice').value,
         category: document.getElementById('editCategory').value,
-        rating: parseInt(document.getElementById('editRating').value),
         availability: document.getElementById('editAvailability').value,
         image: document.getElementById('editImage').value,
         description: document.getElementById('editDescription').value
@@ -1063,6 +1074,7 @@
     });
 
     loadProducts();
+    loadRatings();
   </script>
 </body>
 </html>

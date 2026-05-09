@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let filteredCategory = "all";
   let filteredBySearch = [];
   let allProducts = [];
+  let ratingsCache = {};
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
   // ==================== IMAGE FALLBACK FUNCTION ====================
@@ -58,26 +59,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('product');
     if (productId) {
-      loadProductAndOpenModal(productId);
-      // Clean URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }
-
-  async function loadProductAndOpenModal(productId) {
-    try {
-      const snapshot = await database.ref('products').child(productId).once('value');
-      const product = snapshot.val();
-      if (product) {
-        openModal({ id: productId, ...product });
-      }
-    } catch (error) {
-      console.error('Error loading product:', error);
+      window.location.href = '/product.html?id=' + productId;
     }
   }
   setupCartEvents();
   updateCartUI();
   fetchProducts();
+  loadRatings();
   hideLoader();
 
   // ==================== FUNCTIONS ====================
@@ -196,6 +184,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function loadRatings() {
+    database.ref('ratings').on('value', (snapshot) => {
+      ratingsCache = snapshot.val() || {};
+      displayProducts(visibleCount);
+    });
+  }
+
+  function getAverageRating(productId) {
+    const productRatings = ratingsCache[productId];
+    if (!productRatings) return 0;
+    const values = Object.values(productRatings).filter(v => typeof v === 'number');
+    if (values.length === 0) return 0;
+    return values.reduce((sum, r) => sum + r, 0) / values.length;
+  }
+
+  function getRatingCount(productId) {
+    const productRatings = ratingsCache[productId];
+    if (!productRatings) return 0;
+    return Object.values(productRatings).filter(v => typeof v === 'number').length;
+  }
+
   function displayProducts(count) {
     productsSection.innerHTML = "";
     
@@ -226,8 +235,9 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       ` : '';
 
-      const rating = product.rating || 4;
-      const safeRating = Math.max(0, Math.min(5, rating));
+      const avgRating = getAverageRating(product.id);
+      const ratingCount = getRatingCount(product.id);
+      const safeRating = Math.round(Math.max(0, Math.min(5, avgRating)));
       const stars = "★".repeat(safeRating) + "☆".repeat(5 - safeRating);
       
       // Get all images for this product
@@ -260,7 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="stars">
               ${stars.split('').map(s => `<i class="fas fa-star" style="color: ${s === '★' ? '#ffc107' : '#e0e0e0'}"></i>`).join('')}
             </div>
-            <span class="rating-count">(${product.rating || 5})</span>
+            <span class="rating-count">${ratingCount > 0 ? `(${avgRating.toFixed(1)})` : '(No ratings)'}</span>
           </div>
           <div class="product-price">
             <span class="price-current">${product.price}</span>
@@ -282,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
         if (isAvailable) {
-          openModal(product);
+          window.location.href = '/product.html?id=' + product.id;
         } else {
           showToast("This product is currently unavailable", "error");
         }
@@ -308,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
       productDiv.querySelector('.btn-quick-view').addEventListener('click', (e) => {
         e.stopPropagation();
         if (isAvailable) {
-          openModal(product);
+          window.location.href = '/product.html?id=' + product.id;
         } else {
           showToast("This product is currently unavailable", "error");
         }
@@ -364,9 +374,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    const modalStars = product.rating || 4;
-    const safeModalRating = Math.max(0, Math.min(5, modalStars));
+    const avgRating = getAverageRating(product.id);
+    const ratingCount = getRatingCount(product.id);
+    const safeModalRating = Math.round(Math.max(0, Math.min(5, avgRating)));
     const stars = "★".repeat(safeModalRating) + "☆".repeat(5 - safeModalRating);
+
+    const user = firebase.auth().currentUser;
+    const userRating = (user && ratingsCache[product.id] && ratingsCache[product.id][user.uid]) || 0;
 
     modalDetails.innerHTML = `
       <span class="modal-category">${product.category || 'General'}</span>
@@ -375,7 +389,13 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="stars">
           ${stars.split('').map(s => `<i class="fas fa-star" style="color: ${s === '★' ? '#ffc107' : '#e0e0e0'}"></i>`).join('')}
         </div>
-        <span>(${product.rating || 5} rating)</span>
+        <span>${ratingCount > 0 ? `(${avgRating.toFixed(1)} - ${ratingCount} ratings)` : '(No ratings)'}</span>
+      </div>
+      <div class="modal-user-rating">
+        <p class="rate-title">Rate this product:</p>
+        <div class="rate-stars" data-product-id="${product.id}">
+          ${[1,2,3,4,5].map(i => `<i class="fas fa-star${i <= userRating ? ' active' : ''}" data-value="${i}"></i>`).join('')}
+        </div>
       </div>
       <p class="modal-description">${product.description || 'Premium quality product designed for your elegance and style.'}</p>
       <div class="modal-price">
@@ -443,8 +463,42 @@ document.addEventListener("DOMContentLoaded", () => {
       showCartModal();
     });
 
+    // Star rating click
+    const rateStars = modalDetails.querySelector('.rate-stars');
+    if (rateStars) {
+      const productId = rateStars.dataset.productId;
+      rateStars.querySelectorAll('i').forEach(star => {
+        star.addEventListener('click', () => {
+          const user = firebase.auth().currentUser;
+          if (!user) {
+            showToast('Please sign in to rate this product', 'error');
+            return;
+          }
+          const value = parseInt(star.dataset.value);
+          submitRating(productId, user.uid, value);
+          // Update UI
+          rateStars.querySelectorAll('i').forEach(s => {
+            s.classList.toggle('active', parseInt(s.dataset.value) <= value);
+          });
+        });
+      });
+    }
+
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
+  }
+
+  function submitRating(productId, userId, rating) {
+    const updates = {};
+    updates[`ratings/${productId}/${userId}`] = rating;
+    database.ref().update(updates)
+      .then(() => {
+        showToast('Rating submitted!', 'success');
+      })
+      .catch(err => {
+        console.error('Error submitting rating:', err);
+        showToast('Error submitting rating', 'error');
+      });
   }
 
   function initAuthUI() {

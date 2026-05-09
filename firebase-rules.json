@@ -1,0 +1,33 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": false,
+    "products": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'mo3azbe4er@gmail.com' || auth.token.email == 'admin2@example.com'"
+    },
+    "orders": {
+      ".read": "auth != null && auth.token.email == 'mo3azbe4er@gmail.com' || auth.token.email == 'admin2@example.com'",
+      ".write": "auth != null && auth.token.email == 'mo3azbe4er@gmail.com' || auth.token.email == 'admin2@example.com'"
+    },
+    "ratings": {
+      ".read": true,
+      "$productId": {
+        "$userId": {
+          ".write": "auth != null && auth.uid === $userId && newData.val() >= 1 && newData.val() <= 5",
+          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 5"
+        }
+      }
+    },
+    "siteStats": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'mo3azbe4er@gmail.com' || auth.token.email == 'admin2@example.com'"
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    }
+  }
+}

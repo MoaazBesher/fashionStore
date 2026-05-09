@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Product details - Fashion Store" />
+  <title>Product - Fashion Store</title>
+  <link rel="icon" type="image/x-icon" href="resources/boutique.png">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    /* Product Page Styles */
+    .product-page {
+      max-width: 1200px;
+      margin: 120px auto 60px;
+      padding: 0 20px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-lighter);
+      margin-bottom: 30px;
+    }
+
+    .breadcrumb a {
+      color: var(--text-lighter);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--primary);
+    }
+
+    .breadcrumb i {
+      font-size: 0.6rem;
+    }
+
+    .product-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      margin-bottom: 60px;
+    }
+
+    .product-detail-gallery {
+      position: sticky;
+      top: 100px;
+      align-self: start;
+    }
+
+    .product-detail-main-img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: var(--light-bg);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      border: 1px solid var(--border);
+    }
+
+    .product-detail-main-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    .product-detail-main-img:hover img {
+      transform: scale(1.05);
+    }
+
+    .product-detail-thumbs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .product-detail-thumbs img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      background: var(--light-bg);
+    }
+
+    .product-detail-thumbs img.active,
+    .product-detail-thumbs img:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .product-detail-info {
+      padding-top: 10px;
+    }
+
+    .product-detail-category {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .product-detail-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--secondary);
+      line-height: 1.3;
+      margin-bottom: 15px;
+    }
+
+    .product-detail-rating {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .product-detail-rating .stars i {
+      color: #e0e0e0;
+      font-size: 1rem;
+    }
+
+    .product-detail-rating .stars i.filled {
+      color: #ffc107;
+    }
+
+    .product-detail-rating span {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .product-detail-price {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 25px;
+    }
+
+    .product-detail-description {
+      color: var(--text-light);
+      line-height: 1.8;
+      margin-bottom: 25px;
+      font-size: 0.95rem;
+    }
+
+    .product-detail-availability {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    .product-detail-availability.in-stock {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .product-detail-availability.out-of-stock {
+      background: #fce4ec;
+      color: #c62828;
+    }
+
+    .product-detail-actions {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .product-detail-qty {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .product-detail-qty button {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: var(--light-bg);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--secondary);
+    }
+
+    .product-detail-qty button:hover {
+      background: var(--primary-light);
+    }
+
+    .product-detail-qty span {
+      width: 50px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .btn-detail-cart {
+      flex: 1;
+      min-width: 180px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 12px 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-detail-cart:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn-detail-cart:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-detail-wishlist {
+      width: 48px;
+      height: 48px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      background: white;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--text-lighter);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-detail-wishlist:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-detail-wishlist.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    /* Client Rating */
+    .product-detail-user-rating {
+      padding: 20px;
+      background: var(--light-bg);
+      border-radius: var(--radius-md);
+      margin-bottom: 25px;
+    }
+
+    .product-detail-user-rating .rate-title {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .product-detail-user-rating .rate-stars {
+      display: flex;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .product-detail-user-rating .rate-stars i {
+      font-size: 1.5rem;
+      color: #e0e0e0;
+      transition: all 0.2s ease;
+    }
+
+    .product-detail-user-rating .rate-stars i:hover,
+    .product-detail-user-rating .rate-stars i.active {
+      color: #ffc107;
+      transform: scale(1.2);
+    }
+
+    /* Related Products */
+    .related-section {
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .related-section h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--secondary);
+      margin-bottom: 30px;
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .related-card {
+      background: white;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .related-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .related-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .related-card-body {
+      padding: 15px;
+    }
+
+    .related-card-body h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--secondary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .related-card-body .stars {
+      margin-bottom: 6px;
+    }
+
+    .related-card-body .stars i {
+      font-size: 0.75rem;
+    }
+
+    .related-card-body .price {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Loading State */
+    .product-page-loading {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .product-page-loading i {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .product-page-loading p {
+      color: var(--text-light);
+      font-size: 1.1rem;
+    }
+
+    /* Empty state for related */
+    .related-empty {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-lighter);
+      grid-column: 1 / -1;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .product-detail {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .product-detail-gallery {
+        position: static;
+      }
+
+      .product-detail-title {
+        font-size: 1.4rem;
+      }
+
+      .product-detail-price {
+        font-size: 1.6rem;
+      }
+
+      .related-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+    }
+
+    @media (max-width: 480px) {
+      .product-page {
+        margin-top: 80px;
+        padding: 0 15px;
+      }
+
+      .product-detail-actions {
+        flex-direction: column;
+      }
+
+      .btn-detail-cart {
+        min-width: unset;
+      }
+
+      .related-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+      }
+
+      .related-card img {
+        height: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loader -->
+  <div id="loader">
+    <div class="loader-content">
+      <div class="loader-logo">
+        <i class="fas fa-shopping-bag"></i>
+      </div>
+      <span class="loader-text">Fashion Store</span>
+      <div class="loader-spinner"></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="/" class="navbar-brand">
+        <div class="brand-icon">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Fashion Store</h1>
+          <p>Elegant Style</p>
+        </div>
+      </a>
+      <div class="navbar-actions">
+        <button class="search-toggle" id="signInBtn" title="Sign In">
+          <i class="fas fa-sign-in-alt"></i>
+        </button>
+        <button class="search-toggle" id="profileLink" title="My Profile" style="display:none;">
+          <i class="fas fa-user"></i>
+        </button>
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="dropdown-header">
+            <div class="dropdown-user">
+              <i class="fas fa-user-circle"></i>
+              <span id="dropdownUserName">User</span>
+            </div>
+          </div>
+          <a href="/profile/" class="dropdown-item"><i class="fas fa-clipboard-list"></i> My Orders</a>
+          <a href="/profile/?tab=wishlist" class="dropdown-item"><i class="fas fa-heart"></i> Wishlist</a>
+          <a href="/profile/?tab=settings" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item" id="dropdownSignOut"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Product Page Content -->
+  <div class="product-page">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/">Home</a>
+      <i class="fas fa-chevron-right"></i>
+      <a href="/">Products</a>
+      <i class="fas fa-chevron-right"></i>
+      <span id="breadcrumbProduct">Product</span>
+    </div>
+
+    <!-- Loading -->
+    <div class="product-page-loading" id="productLoading">
+      <i class="fas fa-spinner"></i>
+      <p>Loading product details...</p>
+    </div>
+
+    <!-- Product Detail -->
+    <div class="product-detail" id="productDetail" style="display:none;">
+      <div class="product-detail-gallery">
+        <div class="product-detail-main-img">
+          <img id="pdMainImage" src="" alt="Product" />
+        </div>
+        <div class="product-detail-thumbs" id="pdThumbs"></div>
+      </div>
+      <div class="product-detail-info">
+        <span class="product-detail-category" id="pdCategory"></span>
+        <h1 class="product-detail-title" id="pdTitle"></h1>
+        <div class="product-detail-rating" id="pdRating"></div>
+        <div class="product-detail-price" id="pdPrice"></div>
+        <div class="product-detail-availability" id="pdAvailability"></div>
+        <p class="product-detail-description" id="pdDescription"></p>
+
+        <div class="product-detail-user-rating" id="pdUserRating">
+          <p class="rate-title">Rate this product:</p>
+          <div class="rate-stars" id="pdRateStars"></div>
+        </div>
+
+        <div class="product-detail-actions">
+          <div class="product-detail-qty">
+            <button id="pdQtyMinus"><i class="fas fa-minus"></i></button>
+            <span id="pdQtyDisplay">1</span>
+            <button id="pdQtyPlus"><i class="fas fa-plus"></i></button>
+          </div>
+          <button class="btn-detail-cart" id="pdAddToCart">
+            <i class="fas fa-shopping-cart"></i> Add to Cart
+          </button>
+          <button class="btn-detail-wishlist" id="pdWishlistBtn" title="Add to Wishlist">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="related-section" id="relatedSection" style="display:none;">
+      <h2>You May Also Like</h2>
+      <div class="related-grid" id="relatedGrid"></div>
+    </div>
+  </div>
+
+  <!-- Cart Icon -->
+  <div class="cart-icon" id="cartIcon">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cartCount">0</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Fashion Store</span>
+      </div>
+      <p>&copy; <span id="footerYear"></span> Crafted with excellence by <a href="/organization/">Goats Development</a></p>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div id="toastContainer"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCbv5agQov4LyezPbWM_XC8qk8bkbh8EX8",
+      authDomain: "market-products-d3b84.firebaseapp.com",
+      databaseURL: "https://market-products-d3b84-default-rtdb.firebaseio.com",
+      projectId: "market-products-d3b84",
+      storageBucket: "market-products-d3b84.appspot.com",
+      messagingSenderId: "383604293089",
+      appId: "1:383604293089:web:a59e21488df2f0bdbfe6a0",
+      measurementId: "G-HK5H94NJZG"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const auth = firebase.auth();
+
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+    // ==================== UTILITY ====================
+    function showToast(message, type) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast ' + type;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function getStarsHTML(rating) {
+      const safe = Math.round(Math.max(0, Math.min(5, rating)));
+      let html = '';
+      for (let i = 1; i <= 5; i++) {
+        html += '<i class="fas fa-star' + (i <= safe ? ' filled' : '') + '"></i>';
+      }
+      return html;
+    }
+
+    // ==================== CART ====================
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function updateCartCount() {
+      const el = document.getElementById('cartCount');
+      if (!el) return;
+      const total = cart.reduce((t, i) => t + i.quantity, 0);
+      el.textContent = total > 0 ? total : '0';
+    }
+
+    function addToCartHelper(product) {
+      if (product.availability === 'out_of_stock') { showToast('Out of stock', 'error'); return; }
+      const existing = cart.find(i => i.id === product.id);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({ id: product.id, name: product.name, price: product.price, image: product.image || (product.images && product.images[0]), quantity: 1 });
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      showToast(product.name + ' added to cart!', 'success');
+    }
+
+    // ==================== WISHLIST ====================
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+    function toggleWishlistHelper(productId, product) {
+      const idx = wishlist.findIndex(i => i.id === productId);
+      if (idx > -1) {
+        wishlist.splice(idx, 1);
+        showToast('Removed from wishlist', 'info');
+      } else {
+        wishlist.push({ id: productId, name: product.name, price: product.price, image: product.image || (product.images && product.images[0]), category: product.category });
+        showToast('Added to wishlist!', 'success');
+      }
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      const btn = document.getElementById('pdWishlistBtn');
+      if (btn) btn.classList.toggle('active');
+    }
+
+    // ==================== LOAD PRODUCT ====================
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    if (!productId) {
+      window.location.href = '/';
+    }
+
+    let currentProduct = null;
+    let productQuantity = 1;
+    let ratingsCache = {};
+
+    // Load ratings
+    database.ref('ratings').on('value', snap => {
+      ratingsCache = snap.val() || {};
+      if (currentProduct) updateRatingUI();
+    });
+
+    // Load product
+    database.ref('products').child(productId).once('value', snap => {
+      const data = snap.val();
+      if (!data) {
+        document.getElementById('productLoading').innerHTML = '<p style="color:#f44336;">Product not found</p>';
+        return;
+      }
+      currentProduct = { id: productId, ...data };
+      document.getElementById('productLoading').style.display = 'none';
+      document.getElementById('productDetail').style.display = 'grid';
+      document.getElementById('relatedSection').style.display = 'block';
+      document.getElementById('breadcrumbProduct').textContent = currentProduct.name;
+      renderProduct();
+      loadRelated();
+      setTimeout(() => { document.getElementById('loader').classList.add('hidden'); setTimeout(() => document.getElementById('loader').style.display = 'none', 500); }, 500);
+    });
+
+    function renderProduct() {
+      const p = currentProduct;
+
+      // Images
+      const images = (p.images && p.images.length > 0) ? p.images.filter(i => i) : [p.image];
+      document.getElementById('pdMainImage').src = images[0] || '';
+      document.getElementById('pdMainImage').onerror = function() { this.src = 'https://placehold.co/400x400/e91e63/ffffff?text=No+Image'; };
+
+      const thumbsEl = document.getElementById('pdThumbs');
+      thumbsEl.innerHTML = images.map((img, i) =>
+        '<img src="' + img + '" class="' + (i === 0 ? 'active' : '') + '" data-index="' + i + '" onerror="this.src=\'https://placehold.co/70x70/e91e63/ffffff?text=N/A\'" />'
+      ).join('');
+      thumbsEl.querySelectorAll('img').forEach(t => {
+        t.addEventListener('click', function() {
+          thumbsEl.querySelectorAll('img').forEach(x => x.classList.remove('active'));
+          this.classList.add('active');
+          document.getElementById('pdMainImage').src = this.src;
+        });
+      });
+
+      // Info
+      document.getElementById('pdCategory').textContent = p.category || 'General';
+      document.getElementById('pdTitle').textContent = p.name;
+
+      // Availability
+      const availEl = document.getElementById('pdAvailability');
+      const inStock = p.availability !== 'out_of_stock';
+      availEl.className = 'product-detail-availability ' + (inStock ? 'in-stock' : 'out-of-stock');
+      availEl.innerHTML = '<i class="fas fa-' + (inStock ? 'check-circle' : 'times-circle') + '"></i> ' + (inStock ? 'In Stock' : 'Out of Stock');
+
+      // Description
+      document.getElementById('pdDescription').textContent = p.description || 'Premium quality product designed for your elegance and style.';
+
+      // Price
+      document.getElementById('pdPrice').textContent = p.price;
+
+      // Add to cart button state
+      const cartBtn = document.getElementById('pdAddToCart');
+      if (!inStock) {
+        cartBtn.disabled = true;
+        cartBtn.innerHTML = '<i class="fas fa-times-circle"></i> Out of Stock';
+      }
+
+      updateRatingUI();
+
+      // Wishlist state
+      const wlBtn = document.getElementById('pdWishlistBtn');
+      if (wishlist.some(i => i.id === p.id)) {
+        wlBtn.classList.add('active');
+        wlBtn.querySelector('i').className = 'fas fa-heart';
+      }
+
+      // Quantity
+      document.getElementById('pdQtyMinus').addEventListener('click', function() {
+        if (productQuantity > 1) {
+          productQuantity--;
+          document.getElementById('pdQtyDisplay').textContent = productQuantity;
+        }
+      });
+      document.getElementById('pdQtyPlus').addEventListener('click', function() {
+        productQuantity++;
+        document.getElementById('pdQtyDisplay').textContent = productQuantity;
+      });
+
+      // Add to cart
+      document.getElementById('pdAddToCart').addEventListener('click', function() {
+        for (let i = 0; i < productQuantity; i++) addToCartHelper(p);
+      });
+
+      // Wishlist
+      document.getElementById('pdWishlistBtn').addEventListener('click', function() {
+        toggleWishlistHelper(p.id, p);
+      });
+    }
+
+    function getAverageRating(productId) {
+      const ratings = ratingsCache[productId];
+      if (!ratings) return 0;
+      const vals = Object.values(ratings).filter(v => typeof v === 'number');
+      if (vals.length === 0) return 0;
+      return vals.reduce((s, r) => s + r, 0) / vals.length;
+    }
+
+    function getRatingCount(productId) {
+      const ratings = ratingsCache[productId];
+      if (!ratings) return 0;
+      return Object.values(ratings).filter(v => typeof v === 'number').length;
+    }
+
+    function updateRatingUI() {
+      if (!currentProduct) return;
+      const avg = getAverageRating(currentProduct.id);
+      const count = getRatingCount(currentProduct.id);
+
+      const ratingEl = document.getElementById('pdRating');
+      ratingEl.innerHTML = '<div class="stars">' + getStarsHTML(avg) + '</div><span>' + (count > 0 ? avg.toFixed(1) + ' (' + count + ' ratings)' : 'No ratings') + '</span>';
+
+      // User rating stars
+      const user = auth.currentUser;
+      const userRating = (user && ratingsCache[currentProduct.id] && ratingsCache[currentProduct.id][user.uid]) || 0;
+      const rateStarsEl = document.getElementById('pdRateStars');
+      rateStarsEl.innerHTML = [1,2,3,4,5].map(i =>
+        '<i class="fas fa-star' + (i <= userRating ? ' active' : '') + '" data-value="' + i + '"></i>'
+      ).join('');
+      rateStarsEl.querySelectorAll('i').forEach(star => {
+        star.addEventListener('click', function() {
+          const u = auth.currentUser;
+          if (!u) { showToast('Please sign in to rate', 'error'); return; }
+          const val = parseInt(this.dataset.value);
+          database.ref('ratings/' + currentProduct.id + '/' + u.uid).set(val)
+            .then(() => showToast('Rating submitted!', 'success'))
+            .catch(() => showToast('Error submitting rating', 'error'));
+          rateStarsEl.querySelectorAll('i').forEach(s => {
+            s.classList.toggle('active', parseInt(s.dataset.value) <= val);
+          });
+        });
+      });
+    }
+
+    // ==================== RELATED PRODUCTS ====================
+    function loadRelated() {
+      database.ref('products').once('value', snap => {
+        const related = [];
+        snap.forEach(child => {
+          if (child.key !== productId) {
+            const data = child.val();
+            if (data.category === currentProduct.category) {
+              related.push({ id: child.key, ...data });
+            }
+          }
+        });
+
+        // If not enough from same category, add from other categories
+        if (related.length < 4) {
+          snap.forEach(child => {
+            if (child.key !== productId && !related.some(r => r.id === child.key)) {
+              related.push({ id: child.key, ...child.val() });
+            }
+          });
+        }
+
+        const grid = document.getElementById('relatedGrid');
+        if (related.length === 0) {
+          grid.innerHTML = '<div class="related-empty">No related products found</div>';
+          return;
+        }
+
+        grid.innerHTML = related.slice(0, 8).map(p => {
+          const avg = getAverageRating(p.id);
+          const img = (p.images && p.images[0]) || p.image || '';
+          return '<div class="related-card" data-id="' + p.id + '">' +
+            '<img src="' + img + '" alt="' + p.name + '" onerror="this.src=\'https://placehold.co/300x300/e91e63/ffffff?text=No+Image\'" />' +
+            '<div class="related-card-body">' +
+            '<h4>' + p.name + '</h4>' +
+            '<div class="stars">' + getStarsHTML(avg) + '</div>' +
+            '<div class="price">' + p.price + '</div>' +
+            '</div></div>';
+        }).join('');
+
+        grid.querySelectorAll('.related-card').forEach(card => {
+          card.addEventListener('click', function() {
+            window.location.href = '/product.html?id=' + this.dataset.id;
+          });
+        });
+      });
+    }
+
+    updateCartCount();
+
+    // ==================== AUTH UI ====================
+    auth.onAuthStateChanged(user => {
+      const signInBtn = document.getElementById('signInBtn');
+      const profileLink = document.getElementById('profileLink');
+      if (signInBtn) signInBtn.style.display = user ? 'none' : 'flex';
+      if (profileLink) profileLink.style.display = user ? 'flex' : 'none';
+      if (user && currentProduct) updateRatingUI();
+    });
+
+    document.getElementById('signInBtn').addEventListener('click', () => {
+      auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    });
+
+    document.getElementById('profileLink').addEventListener('click', () => {
+      window.location.href = '/profile/';
+    });
+
+    document.getElementById('cartIcon').addEventListener('click', () => {
+      window.location.href = '/';
+    });
+  </script>
+</body>
+</html>

@@ -5,13 +5,15 @@ A modern, responsive e-commerce website built with HTML, CSS, JavaScript, and Fi
 ## Features
 
 ### Customer Features
+- **Product Ratings** - Rate products with 1-5 stars (authenticated users)
+- **Product Page** - Dedicated product detail page with image gallery, similar to Amazon
 - **Product Catalog** - Browse dresses, bags, and accessories
 - **Search & Filter** - Find products by category
 - **Wishlist** - Save favorite products
 - **Shopping Cart** - Add/remove products, quantity management
-- **User Authentication** - Google Sign-In and Email/Password
+- **User Authentication** - Google Sign-In
 - **User Profile** - Manage personal info, addresses, orders
-- **Product Ratings** - View ratings and reviews
+- **Related Products** - Suggestions based on product category
 
 ### Admin Features
 - **Dashboard** - Overview of store statistics
@@ -36,29 +38,32 @@ A modern, responsive e-commerce website built with HTML, CSS, JavaScript, and Fi
 ```
 fashion-store/
 ├── index.html              # Main store page
-├── style.css             # Main stylesheet
-├── script.js             # Main JavaScript
-├── .gitignore            # Git ignore file
-├── README.md             # This file
+├── product.html            # Product detail page (click product card)
+├── style.css               # Main stylesheet
+├── script.js               # Main JavaScript
+├── .gitignore              # Git ignore file
+├── README.md               # This file
 │
-├── resources/            # Images and assets
+├── resources/              # Images and assets
 │
-├── profile/              # User profile page
+├── profile/                # User profile page
 │   └── index.html
 │
-├── organization/         # Company team page
+├── organization/           # Company team page
 │   ├── index.html
 │   ├── style.css
 │   ├── script.js
 │   └── resources/
 │
-└── admin/               # Admin dashboard
-    ├── index.html       # Admin login
-    ├── script.js
-    ├── app.js
-    ├── addProducts/    # Add new products
-    ├── productsManager/ # Manage products
-    └── adminOrders/    # Manage orders
+├── admin/                  # Admin dashboard
+│   ├── index.html          # Admin login
+│   ├── script.js
+│   ├── app.js
+│   ├── addProducts/        # Add new products
+│   ├── productsManager/    # Manage products
+│   └── adminOrders/        # Manage orders
+│
+└── firebase-rules.json     # Firebase Realtime Database rules template
 ```
 
 ## Getting Started
@@ -101,15 +106,12 @@ const firebaseConfig = {
 };
 ```
 
-4. Set Database Rules:
-```json
-{
-  "rules": {
-    ".read": true,
-    ".write": true
-  }
-}
-```
+4. Set Firebase Realtime Database Rules:
+   Copy the rules from `firebase-rules.json` into your Firebase Console Database Rules section.
+
+5. Add Firebase Config:
+   - Open `script.js` and replace the `firebaseConfig` object with your project credentials
+   - Repeat for `admin/index.html`, `admin/addProducts/index.html`, `admin/productsManager/index.html`, and `admin/adminOrders/index.html`
 
 5. Run locally:
 ```bash

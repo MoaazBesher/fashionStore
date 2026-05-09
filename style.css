@@ -995,6 +995,37 @@ ul {
   margin-bottom: 20px;
 }
 
+.modal-user-rating {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: #f8f8f8;
+  border-radius: 10px;
+}
+
+.modal-user-rating .rate-title {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.modal-user-rating .rate-stars {
+  display: flex;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.modal-user-rating .rate-stars i {
+  font-size: 1.3rem;
+  color: #e0e0e0;
+  transition: all 0.2s ease;
+}
+
+.modal-user-rating .rate-stars i:hover,
+.modal-user-rating .rate-stars i.active {
+  color: #ffc107;
+  transform: scale(1.15);
+}
+
 .modal-description {
   color: var(--text-light);
   line-height: 1.7;
