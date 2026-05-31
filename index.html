@@ -7,13 +7,16 @@
   <meta property="og:title" content="Fashion Store" />
   <meta property="og:description" content="Your ultimate fashion destination - dresses, bags, accessories & more" />
   <meta property="og:image" content="resources/boutique.png" />
-  <meta name="theme-color" content="#e91e63" />
-  <title>Fashion Store</title>
-  <link rel="icon" type="image/x-icon" href="resources/boutique.png">
+  <meta name="theme-color" content="#be185d" />
+  <title>Fashion Store — Premium Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <!-- Loader -->
   <div id="loader">
     <div class="loader-content">
@@ -26,7 +29,7 @@
   </div>
 
   <!-- Navigation -->
-  <nav class="navbar">
+  <nav class="navbar" id="navbar" aria-label="Main navigation">
     <div class="navbar-container">
       <a href="/" class="navbar-brand">
         <div class="brand-icon">
@@ -39,12 +42,17 @@
       </a>
 <div class="navbar-actions">
 
-        <div class="navbar-search" id="navbarSearch">
-          <input type="text" id="searchInput" placeholder="Search products..." />
-          <i class="fas fa-search search-icon"></i>
+        <div class="navbar-search" id="navbarSearch" role="search">
+          <label for="searchInput" class="visually-hidden">Search products</label>
+          <input type="search" id="searchInput" placeholder="Search dresses, bags, accessories…" autocomplete="off" />
+          <i class="fas fa-search search-icon" aria-hidden="true"></i>
         </div>
 
-        <button class="search-toggle" id="signInBtn" title="Sign In">
+        <button type="button" class="search-toggle" id="searchToggle" title="Search" aria-label="Open search">
+          <i class="fas fa-search" aria-hidden="true"></i>
+        </button>
+
+        <button type="button" class="search-toggle" id="signInBtn" title="Sign In" aria-label="Sign in">
           <i class="fas fa-sign-in-alt"></i>
         </button>
         <button class="search-toggle" id="profileLink" title="My Profile" style="display:none;">
@@ -77,11 +85,20 @@
     </nav>
 
   <!-- Hero Section -->
-  <section class="hero">
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-orb hero-orb--1"></div>
+      <div class="hero-orb hero-orb--2"></div>
+      <div class="hero-grid"></div>
+    </div>
     <div class="hero-content">
-      <span class="hero-badge">New Collection <span id="currentYear"></span></span>
-      <h1 class="hero-title">Discover Your <span>Elegant Style</span></h1>
-      <p class="hero-subtitle">Explore our stunning collection of dresses, bags, and accessories designed to make you shine.</p>
+      <span class="hero-badge"><i class="fas fa-star" aria-hidden="true"></i> New Collection <span id="currentYear"></span></span>
+      <h1 class="hero-title" id="hero-heading">Discover Your <span>Elegant Style</span></h1>
+      <p class="hero-subtitle">Curated fashion for every moment — premium dresses, designer bags, and accessories delivered with care across Egypt.</p>
+      <div class="hero-cta">
+        <a href="#shop" class="btn btn-primary">Shop Collection</a>
+        <a href="#contact" class="btn btn-ghost">Contact Us</a>
+      </div>
       <div class="hero-stats">
         <div class="stat-item">
           <div class="stat-number" id="productsCount">0+</div>
@@ -99,8 +116,18 @@
     </div>
   </section>
 
+  <div class="trust-bar" aria-label="Store benefits">
+    <div class="trust-bar-inner">
+      <div class="trust-item"><i class="fas fa-truck-fast" aria-hidden="true"></i><span>Fast Delivery</span></div>
+      <div class="trust-item"><i class="fas fa-shield-halved" aria-hidden="true"></i><span>Secure Checkout</span></div>
+      <div class="trust-item"><i class="fas fa-rotate-left" aria-hidden="true"></i><span>Easy Returns</span></div>
+      <div class="trust-item"><i class="fas fa-headset" aria-hidden="true"></i><span>24/7 Support</span></div>
+    </div>
+  </div>
+
+  <main id="main-content">
   <!-- Filters -->
-  <section class="filters-section">
+  <section class="filters-section" id="shop" aria-label="Product categories">
     <div class="filters-container">
       <button class="filter-btn active" data-category="all">All Products</button>
       <button class="filter-btn" data-category="dress">Dresses</button>
@@ -110,7 +137,12 @@
   </section>
 
   <!-- Products Grid -->
-  <section class="products-section">
+  <section class="products-section" aria-labelledby="products-heading">
+    <header class="section-header reveal">
+      <p class="section-eyebrow">Our Collection</p>
+      <h2 id="products-heading">Featured Products</h2>
+      <p class="section-desc">Handpicked pieces updated daily from our marketplace.</p>
+    </header>
     <div class="products-grid" id="products"></div>
     <p id="noResults">No products found. Please try a different search.</p>
   </section>
@@ -238,18 +270,18 @@
 
   <!-- Sign In Required Modal -->
   <div id="signInModal" class="modal">
-    <div class="modal-content" style="max-width: 400px; text-align: center; padding: 40px;">
-      <button class="modal-close" onclick="closeSignInModal()">
-        <i class="fas fa-times"></i>
+    <div class="modal-content sign-in-modal">
+      <button type="button" class="modal-close" onclick="closeSignInModal()" aria-label="Close">
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
-      <div style="margin-bottom: 20px;">
-        <div class="brand-icon" style="width: 70px; height: 70px; background: linear-gradient(135deg, #e91e63, #c2185b); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-          <i class="fas fa-user-circle" style="font-size: 2rem; color: white;"></i>
+      <div class="sign-in-modal-body">
+        <div class="brand-icon sign-in-modal-icon">
+          <i class="fas fa-user-circle" aria-hidden="true"></i>
         </div>
-        <h2 style="font-size: 1.5rem; color: #212121; margin-bottom: 10px;">Sign In Required</h2>
-        <p style="color: #666; margin-bottom: 25px;">Please sign in to complete your order</p>
-        <button id="modalSignInBtn" style="display: flex; align-items: center; justify-content: center; width: 100%; padding: 14px; background: #4285f4; color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; gap: 10px;">
-          <i class="fab fa-google"></i> Continue with Google
+        <h2>Sign In Required</h2>
+        <p>Please sign in to complete your order</p>
+        <button type="button" id="modalSignInBtn" class="btn-google">
+          <i class="fab fa-google" aria-hidden="true"></i> Continue with Google
         </button>
       </div>
     </div>
@@ -268,8 +300,10 @@
     </div>
   </div>
 
+  </main>
+
   <!-- Contact Section -->
-  <section class="contact-section">
+  <section class="contact-section" id="contact">
     <div class="contact-container">
       <h2>Get In Touch</h2>
       <p>Follow us on social media or contact us directly</p>
@@ -299,7 +333,7 @@
   </footer>
 
   <!-- Toast Container -->
-  <div id="toastContainer"></div>
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
@@ -328,50 +362,37 @@
     updateVisitCounter();
 
     function updateVisitCounter() {
-      if (!navigator.onLine) {
-        console.warn('No internet connection - visit not counted');
-        return;
-      }
+      if (!navigator.onLine) return;
 
-      const statsRef = database.ref('siteStats');
-      
-      statsRef.transaction((currentStats) => {
-        if (currentStats === null) {
-          return {
-            visits: 1,
-            lastUpdated: firebase.database.ServerValue.TIMESTAMP
-          };
-        }
-        
-        if (typeof currentStats === 'object') {
-          currentStats.visits = (currentStats.visits || 0) + 1;
-          currentStats.lastUpdated = firebase.database.ServerValue.TIMESTAMP;
-          return currentStats;
-        }
-        
-        return undefined;
-      }).then((result) => {
-        if (result.committed) {
-          console.log('Visit counter updated successfully.');
-        }
-      }).catch((error) => {
-        console.error('Error updating visit counter:', error);
-      });
+      database.ref('siteStats/visits').transaction((current) => {
+        return (current || 0) + 1;
+      }).catch(() => { /* rules may block until deployed; fail silently */ });
     }
 
     // Fetch real stats for hero section
     function fetchHeroStats() {
-      // Products count
       database.ref('products').once('value', snapshot => {
         const count = snapshot.numChildren() || 0;
         document.getElementById('productsCount').textContent = count + '+';
       });
 
-      // Customers = Orders count
-      database.ref('orders').once('value', snapshot => {
-        const count = snapshot.numChildren() || 0;
-        document.getElementById('customersCount').textContent = count >= 1000 ? (count/1000).toFixed(1) + 'K+' : count + '+';
-      });
+      database.ref('siteStats/totalOrders').once('value', snapshot => {
+        let count = snapshot.val();
+        if (count == null) {
+          database.ref('orders').once('value', ordersSnap => {
+            count = ordersSnap.numChildren() || 0;
+            setCustomerCount(count);
+          }).catch(() => setCustomerCount(0));
+        } else {
+          setCustomerCount(count);
+        }
+      }).catch(() => setCustomerCount(0));
+
+      function setCustomerCount(count) {
+        const el = document.getElementById('customersCount');
+        if (!el) return;
+        el.textContent = count >= 1000 ? (count / 1000).toFixed(1) + 'K+' : count + '+';
+      }
 
       // Rating - calculated from all products average
       database.ref('products').once('value', snapshot => {

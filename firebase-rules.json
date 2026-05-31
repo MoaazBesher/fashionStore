@@ -21,7 +21,18 @@
     },
     "siteStats": {
       ".read": true,
-      ".write": "auth != null && auth.token.email == 'mo3azbe4er@gmail.com' || auth.token.email == 'admin2@example.com'"
+      "visits": {
+        ".write": true,
+        ".validate": "newData.isNumber() && newData.val() >= 0 && (!data.exists() || newData.val() >= data.val())"
+      },
+      "totalOrders": {
+        ".read": true,
+        ".write": "auth != null && (auth.token.email == 'mo3azbe4er@gmail.com' || auth.token.email == 'admin2@example.com')"
+      },
+      "lastUpdated": {
+        ".write": "auth != null && (auth.token.email == 'mo3azbe4er@gmail.com' || auth.token.email == 'admin2@example.com')"
+      },
+      ".write": "auth != null && (auth.token.email == 'mo3azbe4er@gmail.com' || auth.token.email == 'admin2@example.com')"
     },
     "users": {
       "$uid": {
