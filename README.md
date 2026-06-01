@@ -3,7 +3,7 @@
 A full-featured, production-ready e-commerce marketplace built with vanilla **HTML, CSS, JavaScript**, and **Firebase**. Designed for the Egyptian market with a modern pink-themed UI, glassmorphism aesthetics, and responsive design.
 
 <p align="center">
-  <img src="screenshots/01-home-full.png" alt="Fashion Store Homepage" width="80%" />
+  <img src="screenshots/01-home-full.jpg" alt="Fashion Store Homepage" width="80%" />
 </p>
 
 ---
@@ -37,14 +37,67 @@ A full-featured, production-ready e-commerce marketplace built with vanilla **HT
 
 | Page | Preview |
 |------|---------|
-| **Homepage** — Product grid, hero section, category filters | <img src="screenshots/02-home-viewport.png" alt="Homepage" width="400"/> |
-| **Product Detail** — Gallery, ratings, add to cart | <img src="screenshots/03-product-page.png" alt="Product Detail" width="400"/> |
-| **Organization** — Company/team landing page | <img src="screenshots/04-organization-page.png" alt="Organization Page" width="400"/> |
-| **User Profile** — Orders, wishlist, settings | <img src="screenshots/05-profile-page.png" alt="Profile Page" width="400"/> |
-| **Admin Login** — Google Sign-In gateway | <img src="screenshots/06-admin-login.png" alt="Admin Login" width="400"/> |
-| **Add Products** — Admin product creation form | <img src="screenshots/07-admin-add-products.png" alt="Add Products" width="400"/> |
-| **Products Manager** — Edit, delete, toggle stock | <img src="screenshots/08-admin-products-manager.png" alt="Products Manager" width="400"/> |
-| **Orders Manager** — View and manage orders | <img src="screenshots/09-admin-orders.png" alt="Orders Manager" width="400"/> |
+| **Homepage** — Product grid, hero section, category filters | <img src="screenshots/02-home-viewport.jpg" alt="Homepage" width="400"/> |
+| **Product Detail** — Gallery, ratings, add to cart | <img src="screenshots/03-product-page.jpg" alt="Product Detail" width="400"/> |
+| **Organization** — Company/team landing page | <img src="screenshots/04-organization-page.jpg" alt="Organization Page" width="400"/> |
+| **User Profile** — Orders, wishlist, settings | <img src="screenshots/05-profile-page.jpg" alt="Profile Page" width="400"/> |
+| **Admin Login** — Google Sign-In gateway | <img src="screenshots/06-admin-login.jpg" alt="Admin Login" width="400"/> |
+| **Add Products** — Admin product creation form | <img src="screenshots/07-admin-add-products.jpg" alt="Add Products" width="400"/> |
+| **Products Manager** — Edit, delete, toggle stock | <img src="screenshots/08-admin-products-manager.jpg" alt="Products Manager" width="400"/> |
+| **Orders Manager** — View and manage orders | <img src="screenshots/09-admin-orders.jpg" alt="Orders Manager" width="400"/> |
+
+---
+
+## Testing
+
+A fully automated **End-to-End (E2E) test suite** is included, covering all major features using Puppeteer. The runner generates an interactive HTML dashboard and an Excel report.
+
+### Test Modules
+
+| Module | Tests | Scope |
+|--------|-------|-------|
+| Page Loading & SEO | 8 | HTTP status, meta tags, page titles |
+| Navigation & UI | 8 | Navbar rendering, dropdowns, link visibility |
+| Hero Section | 6 | Stats display, CTA buttons, scroll behavior |
+| Product Display & Filtering | 10 | Grid rendering, category filtering, pagination |
+| Search Functionality | 5 | Real-time search, results matching |
+| Product Detail Page | 8 | Gallery, ratings, related products |
+| Cart Functionality | 10 | Add/remove, quantities, localStorage persistence |
+| Checkout Flow | 8 | Form validation, order submission |
+| Wishlist Functionality | 5 | Add/remove, toggle state |
+| Responsive Design | 6 | Breakpoints, mobile layout |
+| Accessibility & Performance | 6 | ARIA labels, contrast, load times |
+
+**Total: 80 tests — 100% pass rate ✅**
+
+### Running Tests
+
+```bash
+# Start the live server first, then:
+cd test
+npm install
+node run-tests.js
+```
+
+Or double-click `run_tests.bat` (Windows).
+
+### Test Dashboard
+
+The test runner produces an interactive HTML dashboard with:
+
+| Tab | Content |
+|-----|---------|
+| **Overview** | Pass/fail stats, donut chart, module distribution |
+| **Modules** | Per-module breakdown with pass rates |
+| **Test Results** | Searchable/filterable table with expandable rows |
+| **Charts & Analytics** | Response times, top modules, performance insights |
+
+| Report Page | Preview |
+|-------------|---------|
+| **Overview** — Summary stats, charts, execution info | <img src="screenshots/10-test-overview.jpg" alt="Test Overview" width="400"/> |
+| **Modules** — Per-module pass rates | <img src="screenshots/11-test-modules.jpg" alt="Test Modules" width="400"/> |
+| **Test Results** — Searchable table with filters | <img src="screenshots/12-test-results.jpg" alt="Test Results" width="400"/> |
+| **Analytics** — Response times, performance data | <img src="screenshots/13-test-analytics.jpg" alt="Test Analytics" width="400"/> |
 
 ---
 
@@ -74,6 +127,17 @@ fashion-store/
 │
 ├── screenshots/                # Screenshots for README
 ├── resources/                  # Static assets (favicon, etc.)
+├── run_tests.bat               # Windows batch file to run tests
+│
+├── test/                       # Automated E2E test suite
+│   ├── run-tests.js            # Test runner (Puppeteer)
+│   ├── test.html               # Interactive HTML test report
+│   ├── test-results.xlsx       # Excel test report
+│   └── tests/                  # 11 test modules
+│       ├── page-loading.js
+│       ├── cart.js
+│       ├── checkout.js
+│       └── ...
 │
 ├── profile/
 │   └── index.html              # User profile page

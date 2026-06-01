@@ -167,10 +167,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function hideLoader() {
     const loader = document.getElementById("loader");
-    setTimeout(() => {
-      loader.classList.add('hidden');
-      setTimeout(() => loader.style.display = 'none', 500);
-    }, 1200);
+    if (!loader) return;
+    loader.classList.add('hidden');
+    setTimeout(() => loader.style.display = 'none', 500);
   }
 
   function initSearch() {
@@ -1137,6 +1136,31 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
       document.body.style.overflow = '';
+    }
+
+    if (e.key === 'Tab') {
+      const openModal = Array.from(document.querySelectorAll('.modal')).find(m => m.style.display === 'block');
+      if (openModal) {
+        const focusable = Array.from(openModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+          .filter(el => !el.hasAttribute('disabled') && !el.getAttribute('aria-hidden') && window.getComputedStyle(el).display !== 'none');
+        
+        if (focusable.length === 0) return;
+        
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        
+        if (e.shiftKey) {
+          if (document.activeElement === first || document.activeElement === document.body) {
+            last.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === last || document.activeElement === document.body) {
+            first.focus();
+            e.preventDefault();
+          }
+        }
+      }
     }
   });
 });

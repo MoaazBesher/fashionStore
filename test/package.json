@@ -1,0 +1,14 @@
+{
+  "name": "fashion-store-tests",
+  "version": "1.0.0",
+  "description": "Automated testing suite for Fashion Store e-commerce website",
+  "main": "run-tests.js",
+  "scripts": {
+    "test": "node run-tests.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "puppeteer": "^23.0.0",
+    "sharp": "^0.34.5"
+  }
+}

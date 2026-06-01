@@ -2060,9 +2060,8 @@ ul {
   }
 
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 0 10px;
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .product-image {
@@ -2132,8 +2131,8 @@ ul {
   }
 
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: 1fr;
+    gap: 16px;
     padding: 0 8px;
   }
 
@@ -2423,8 +2422,8 @@ ul {
   }
 
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .product-image {
